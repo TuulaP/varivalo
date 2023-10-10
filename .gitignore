@@ -1,0 +1,11 @@
+
+*.tmp
+.env
+.python_hue
+*.pyc
+
+phue.py
+
+
+tmp/*
+__pycache__/*
