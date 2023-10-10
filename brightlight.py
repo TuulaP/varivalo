@@ -48,12 +48,18 @@ lights = b.get_light_objects()
 # Check if the specific service is up -> if not show some red color.
 
 api_url = os.getenv('SERVICEMONITOR')
-usr = os.getenv('USRN')
-sal = os.getenv('SAL')
-auth = HTTPBasicAuth(usr, sal)
 
-response = requests.get(api_url, auth=auth)
-#print(response.status_code)
+## if auth needed
+#usr = os.getenv('USRN')
+#sal = os.getenv('SAL')
+#auth = HTTPBasicAuth(usr, sal)
+
+##response = requests.get(api_url, auth=auth)
+response = requests.get(api_url)
+
+
+if response.status_code == 200 : 
+    print("All ok")
 #print(response.json())
 
 # Blue: {"hue":46920} 
@@ -64,10 +70,10 @@ response = requests.get(api_url, auth=auth)
 # turquoise 42555
 # spruce  29555
 
-if (response.json()['status'] == 'UP') :
+if (response or response.json()['status'] == 'UP') :
 
     if 3>5:  # maybe not.
-
+        # do the rainbow
         totalTime = 20 # in seconds
         transitionTime = 1 # in seconds
 
