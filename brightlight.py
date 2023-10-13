@@ -9,11 +9,14 @@ import requests
 from requests.auth import HTTPBasicAuth
 import atexit
 
+chosenLight = 1   # Or to config file?
+
 
 def exit_handler():
-    #print("Thx and bye")
+    # print("Thx and bye")
     # shut light off
-    b.set_light(1,'on', False)
+    b.set_light(chosenLight, 'on', False)
+
 
 atexit.register(exit_handler)
 
@@ -25,23 +28,19 @@ b = Bridge(ip=homeip, config_file_path=".python_hue")
 
 
 # Get the bridge state (This returns the full dictionary that you can explore)
-##print(b.get_api())
+# print(b.get_api())
 
 
-# Prints if light 1 is on or not
-#print(b.get_light(1, 'on'))
+# Prints if light  is on or not
+# print(b.get_light(chosenLight, 'on'))
 
-#b.set_light(1,'on', False)
-b.set_light(1,'on', True)
-
-
-command =  {'transitiontime' : 300, 'on' : True, 'bri' : 254}
-b.set_light(1, command)
+# command =  {'transitiontime' : 300, 'on' : True, 'bri' : 254}
+# b.set_light(chosenLight, command)
 
 
 # do the rainbow
 lights = b.get_light_objects()
-#lights = lights[0]  # just 1 light;)
+# lights = lights[0]  # just 1 light;)
 
 # ----------------------------------
 
@@ -49,20 +48,20 @@ lights = b.get_light_objects()
 
 api_url = os.getenv('SERVICEMONITOR')
 
-## if auth needed
-#usr = os.getenv('USRN')
-#sal = os.getenv('SAL')
-#auth = HTTPBasicAuth(usr, sal)
+# if auth needed
+# usr = os.getenv('USRN')
+# sal = os.getenv('SAL')
+# auth = HTTPBasicAuth(usr, sal)
 
-##response = requests.get(api_url, auth=auth)
+# response = requests.get(api_url, auth=auth)
 response = requests.get(api_url)
 
 
-if response.status_code == 200 : 
+if response.status_code == 200:
     print("All ok")
-#print(response.json())
+# print(response.json())
 
-# Blue: {"hue":46920} 
+# Blue: {"hue":46920}
 # Neongreen 26920
 # pink 56920
 # purpleish 50920
@@ -70,12 +69,12 @@ if response.status_code == 200 :
 # turquoise 42555
 # spruce  29555
 
-if (response or response.json()['status'] == 'UP') :
+if (response.json() is True):
 
-    if 3>5:  # maybe not.
+    if 3 > 5:  # maybe not.
         # do the rainbow
-        totalTime = 20 # in seconds
-        transitionTime = 1 # in seconds
+        totalTime = 20  # in seconds
+        transitionTime = 1  # in seconds
 
         maxHue = 65535
         hueIncrement = maxHue / totalTime
@@ -94,13 +93,15 @@ if (response or response.json()['status'] == 'UP') :
             hue = (hue + hueIncrement) % maxHue
 
             sleep(transitionTime)
-else :
-    b.set_light(1, 'hue', 50920)
-    sleep(5)
-    b.set_light(1, 'hue', 56920)
-    sleep(5)
-    b.set_light(1, 'hue', 49555)
-    sleep(5)
-    b.set_light(1, 'hue', 50920)
+else:
+    if (b.get_light(chosenLight, 'on') is False):
+        # b.set_light(1,'on', False)
+        b.set_light(chosenLight, 'on', True)
 
-
+    b.set_light(chosenLight, 'hue', 50920)
+    sleep(5)
+    b.set_light(chosenLight, 'hue', 56920)
+    sleep(5)
+    b.set_light(chosenLight, 'hue', 49555)
+    sleep(5)
+    b.set_light(chosenLight, 'hue', 50920)
